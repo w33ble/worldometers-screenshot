@@ -23,3 +23,6 @@ jobs:
         with:
           name: screenshots
           path: ./output/screenshots/spec.js
+          if-no-files-found: error
+          retention-days: 14
+

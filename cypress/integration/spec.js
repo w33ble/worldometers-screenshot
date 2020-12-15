@@ -1,14 +1,35 @@
-it('works', () => {
-  expect(42).to.equal(21 + 21)
-  cy.visit('https://example.cypress.io')
-  // runner includes the application in the viewport
-  // and the reporter showing the command log
-  cy.screenshot('runner', { capture: 'runner' })
-  // just the visible portion of the viewport
-  cy.screenshot('viewport', { capture: 'viewport' })
-  // you can take the screenshot of the entire page
-  // which will be stitched into one tall image
-  cy.screenshot('fullPage', { capture: 'fullPage' })
+it('top 14', () => {
+  const viewWidth = 1280;
+  const viewHeight = 768;
+  const footerHeight = 129;
+  const paddingLeft = 96;
+  const paddingRight = 80;
+
+  // handle crappy websites
+  cy.on('uncaught:exception', (err, runnable) => {
+    // returning false here prevents Cypress from failing the test
+    return false
+  })
+
+  cy.visit('https://www.worldometers.info/coronavirus/country/us/')
+
+  // TODO: interact with the page to load results
+  cy.viewport(viewWidth, viewHeight)
+
+  cy.scrollTo(0, 1200)
+
+  cy.get('#nav-yesterday-tab a').click()
+
+  cy.get('#nav-yesterday .sorting:nth-of-type(4)').click()
+
+  cy.screenshot('screenshot', {
+    // capture: 'fullPage',
+    capture: 'viewport',
+    timeout: 10000,
+    clip: {
+      x: paddingLeft, y: 0, width: viewWidth - paddingLeft - paddingRight, height: viewHeight - footerHeight
+    },
+  })
 
   // log the top window's dimensions
   const resolution = Cypress._.pick(top, [
