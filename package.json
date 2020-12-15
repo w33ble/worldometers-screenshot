@@ -1,0 +1,14 @@
+{
+  "name": "example-firefox",
+  "version": "0.0.0",
+  "description": "running Cypress using Firefox",
+  "scripts": {
+    "test": "cypress run"
+  },
+  "author": "w33ble <https://github.com/w33ble>",
+  "license": "ISC",
+  "private": true,
+  "devDependencies": {
+    "cypress": "6.1.0"
+  }
+}
