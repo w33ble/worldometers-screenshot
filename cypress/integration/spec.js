@@ -4,6 +4,7 @@ it('top 14', () => {
   const footerHeight = 129;
   const paddingLeft = 96;
   const paddingRight = 80;
+  const filename = (new Date()).toISOString()
 
   // handle crappy websites
   cy.on('uncaught:exception', (err, runnable) => {
@@ -22,7 +23,7 @@ it('top 14', () => {
 
   cy.get('#nav-yesterday .sorting:nth-of-type(4)').click()
 
-  cy.screenshot('screenshot', {
+  cy.screenshot(filename, {
     // capture: 'fullPage',
     capture: 'viewport',
     timeout: 10000,
