@@ -5,23 +5,32 @@ const paddingLeft = 96;
 const paddingRight = 80;
 const filename = (new Date()).toISOString()
 
-it('US top 14', () => {
+function loadPage(url, prune = false) {
+  cy.viewport(viewWidth, viewHeight)
+
+  cy.visit(url)
+
+  // remove the first 2 rows, to stop the ads from showing up
+  cy.window().then( win => {
+    win.document.querySelector('.row').remove()
+    win.document.querySelector('.row').remove()
+  });
+
+  cy.get('#nav-yesterday-tab a').click()
+
+  cy.get('#nav-yesterday .sorting:nth-of-type(4)').click()
+}
+
+beforeEach(() => {
   // handle crappy websites
   cy.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from failing the test
     return false
   })
+})
 
-  cy.visit('https://www.worldometers.info/coronavirus/country/us/')
-
-  // TODO: interact with the page to load results
-  cy.viewport(viewWidth, viewHeight)
-
-  cy.scrollTo(0, 1200)
-
-  cy.get('#nav-yesterday-tab a').click()
-
-  cy.get('#nav-yesterday .sorting:nth-of-type(4)').click()
+it('US top 14', () => {
+  loadPage('https://www.worldometers.info/coronavirus/country/us/')
 
   cy.screenshot(`${filename}-US`, {
     // capture: 'fullPage',
@@ -34,22 +43,7 @@ it('US top 14', () => {
 })
 
 it('World top 14', () => {
-  // handle crappy websites
-  cy.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from failing the test
-    return false
-  })
-
-  cy.visit('https://www.worldometers.info/coronavirus/')
-
-  // TODO: interact with the page to load results
-  cy.viewport(viewWidth, viewHeight)
-
-  cy.scrollTo(0, 1200)
-
-  cy.get('#nav-yesterday-tab a').click()
-
-  cy.get('#nav-yesterday .sorting:nth-of-type(4)').click()
+  loadPage('https://www.worldometers.info/coronavirus/')
 
   cy.screenshot(`${filename}-World`, {
     // capture: 'fullPage',
