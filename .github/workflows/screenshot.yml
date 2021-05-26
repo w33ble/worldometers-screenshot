@@ -2,6 +2,7 @@ name: coronavirus-screenshots
 
 on:
   push:
+    branches: [ master ]
   schedule:
     - cron:  '0 4 * * *' # daily at 4am
 
@@ -12,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.COMMIT_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v1
@@ -22,13 +25,18 @@ jobs:
         uses: cypress-io/github-action@v2
         timeout-minutes: 10
 
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     name: screenshots
-      #     path: ./output/screenshots/spec.js
-      #     if-no-files-found: error
-      #     retention-days: 14
-
       - name: Post to Imgur
         run: |
           for i in ./output/screenshots/spec.js/*.png; do curl -s -o /dev/null -XPOST "https://api.imgur.com/3/image" -H "Authorization: Client-ID ${{ secrets.IMGUR_CLIENT }}" -F "album=${{ secrets.IMGUR_ALBUM }}" -F "type=file" -F "title=${i}" -F "description=${i}" -F "image=@${i}"; done
+
+      - name: Log datetime
+        run: date > lastrun.log
+
+      - name: Commit run log
+        uses: EndBug/add-and-commit@v7
+        with:
+          default_author: github_actions
+          add: 'lastrun.log --force'
+          pull_strategy: 'NO-PULL'
+          branch: lastrun
+          push: 'origin lastrun --force'
